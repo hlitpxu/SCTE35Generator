@@ -4,7 +4,8 @@ This project is a tool for generating SCTE35 messages.
 * If you want to use the esam oob sender feature, you need to deploy the service on your local server
 
 ## SCTE35 support
-Applicable to ANSI/SCTE 35 2019a specification
+Applicable to ANSI/SCTE 35 2023r1 specification
+* downloaded from https://account.scte.org/standards/library/catalog/
 ### Splice command type
 * Splice Insert
 * Time Signal

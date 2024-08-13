@@ -1,7 +1,9 @@
 <script setup>
 import {
     SEGMENTATION_TYPE_ID,
+    SEGMENTATION_TYPE_ID_NS,
     SEGMENTATION_UPID_TYPE,
+    SEGMENTATION_UPID_TYPE_NS,
     DEVICE_RESTRICTION,
 } from './types.ts';
 
@@ -109,7 +111,7 @@ var newComponent = {
                                 <option
                                     v-for="type, index in Object.keys(DEVICE_RESTRICTION).filter(key => isNaN(Number(key)))"
                                     :key="index" :value="DEVICE_RESTRICTION[type]">
-                                    {{ type }}
+                                    {{ type.toLowerCase() }}
                                 </option>
                             </select>
                         </div>
@@ -150,8 +152,8 @@ var newComponent = {
             </select>
         </div>
 
-        <div v-if="SEGMENTATION_TYPE_ID.get_segment_num(value.type_id) != SEGMENTATION_TYPE_ID.SEGMENT_NUM.ZERO
-            && SEGMENTATION_TYPE_ID.get_segment_num(value.type_id) != SEGMENTATION_TYPE_ID.SEGMENT_NUM.ONE"
+        <div v-if="SEGMENTATION_TYPE_ID_NS.get_segment_num(value.type_id) != SEGMENTATION_TYPE_ID_NS.SEGMENT_NUM.ZERO
+            && SEGMENTATION_TYPE_ID_NS.get_segment_num(value.type_id) != SEGMENTATION_TYPE_ID_NS.SEGMENT_NUM.ONE"
             class="col-12">
             <div class="input-group">
                 <div class="input-group-prepend">
@@ -167,7 +169,7 @@ var newComponent = {
             </div>
         </div>
 
-        <div v-if="SEGMENTATION_TYPE_ID.sub_segment_required(value.type_id)" class="col-12">
+        <div v-if="SEGMENTATION_TYPE_ID_NS.sub_segment_required(value.type_id)" class="col-12">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="form-control">sub_segment_num</span>
@@ -286,7 +288,7 @@ export default {
                 rv[offset + 4] |= (data.duration & 0xFF);
             }
 
-            let upid_length = SEGMENTATION_UPID_TYPE.lenth_limit(data.upid_type)
+            let upid_length = SEGMENTATION_UPID_TYPE_NS.lenth_limit(data.upid_type)
             let upid_data = data.upid;
             if (upid_length != undefined && upid_length >= 0) {
                 if (upid_data.length < upid_length) {
@@ -307,21 +309,21 @@ export default {
             rv.push(data.type_id & 0xFF);
 
             // segment num
-            switch (SEGMENTATION_TYPE_ID.get_segment_num(data.type_id)) {
-                case SEGMENTATION_TYPE_ID.SEGMENT_NUM.ZERO:
+            switch (SEGMENTATION_TYPE_ID_NS.get_segment_num(data.type_id)) {
+                case SEGMENTATION_TYPE_ID_NS.SEGMENT_NUM.ZERO:
                     rv.push(0x00, 0x00);
                     break;
-                case SEGMENTATION_TYPE_ID.SEGMENT_NUM.ONE:
+                case SEGMENTATION_TYPE_ID_NS.SEGMENT_NUM.ONE:
                     rv.push(0x01, 0x01);
                     break;
-                case SEGMENTATION_TYPE_ID.SEGMENT_NUM.POSITIVE:
-                case SEGMENTATION_TYPE_ID.SEGMENT_NUM.NON_NEGATIVE:
+                case SEGMENTATION_TYPE_ID_NS.SEGMENT_NUM.POSITIVE:
+                case SEGMENTATION_TYPE_ID_NS.SEGMENT_NUM.NON_NEGATIVE:
                     rv.push(data.segment_num & 0xFF);
                     rv.push(data.segments_expcted & 0xFF);
                     break;
             }
 
-            if (SEGMENTATION_TYPE_ID.sub_segment_required(data.type_id)) {
+            if (SEGMENTATION_TYPE_ID_NS.sub_segment_required(data.type_id)) {
                 rv.push(data.sub_segment_num & 0xFF);
                 rv.push(data.sub_segments_expcted & 0xFF);
             }
